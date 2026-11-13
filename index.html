@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SRAM و DRAM</title>
+<style>
+:root{--bg:#070713;--card:rgba(255,255,255,.05);--fg:#eef0ff;--mut:#a3a5cb;--a:#f472b6;--b:#60a5fa;--line:rgba(255,255,255,.12);--glow:.35;--dx:-1;--bd:270deg;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:light){:root{--bg:#f3f2ff;--card:rgba(255,255,255,.78);--fg:#171633;--mut:#5d5f86;--a:#be185d;--b:#2563eb;--line:rgba(60,50,140,.16);--glow:.12;color-scheme:light}}
+html[dir=ltr]{--dx:1;--bd:90deg}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--fg);font-family:Vazirmatn,Tahoma,"Segoe UI",system-ui,sans-serif;line-height:1.7;overflow:hidden;position:relative}
+html[lang=en] body{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(40vmax 40vmax at 15% 10%,var(--a),transparent 70%),radial-gradient(36vmax 36vmax at 95% 95%,var(--b),transparent 70%);opacity:var(--glow);animation:drift 14s ease-in-out infinite alternate}
+body::after{content:"";position:fixed;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:56px 56px;opacity:.35;-webkit-mask-image:radial-gradient(ellipse at center,#000 30%,transparent 80%);mask-image:radial-gradient(ellipse at center,#000 30%,transparent 80%)}
+@keyframes drift{to{transform:scale(1.15) translate(2%,2%)}}
+.deck{height:100%;position:relative;z-index:2}
+.slide{--c:var(--a);position:absolute;inset:0;display:flex;flex-direction:column;justify-content:safe center;padding:8vh 8vw 12vh;overflow-y:auto;opacity:0;visibility:hidden;transform:translateX(calc(var(--dx)*50px)) scale(.98);transition:opacity .5s,transform .5s,visibility .5s}
+.slide[data-s=B]{--c:var(--b)}
+.slide.on{opacity:1;visibility:visible;transform:none}
+.slide.past{transform:translateX(calc(var(--dx)*-50px)) scale(.98)}
+.g{background:linear-gradient(90deg,var(--a),var(--b));-webkit-background-clip:text;background-clip:text;color:transparent}
+h1{font-size:clamp(2.1rem,6.5vw,4.4rem);margin:0 0 1rem;line-height:1.3}
+h2{font-size:clamp(1.45rem,3.6vw,2.5rem);margin:0 0 1.1rem;line-height:1.35}
+.sub{color:var(--mut);font-size:clamp(1rem,2vw,1.4rem);max-width:40ch}
+ul{list-style:none;padding:0;margin:0;display:grid;gap:.6rem;max-width:62rem}
+li{font-size:clamp(.94rem,1.7vw,1.22rem);background:var(--card);border:1px solid var(--line);border-inline-start:3px solid var(--c);border-radius:14px;padding:.65rem 1rem;backdrop-filter:blur(10px);opacity:0;transform:translateY(16px)}
+li b,.card b{color:var(--c)}
+.on li{animation:up .55s forwards;animation-delay:calc(.15s + var(--i)*.1s)}
+@keyframes up{to{opacity:1;transform:none}}
+.on .cards,.on .scroll,.on .chain,.on .math,.on .ex,.on .refs{animation:fade .7s .2s both}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}}
+ul+.cards,ul+.scroll,ul+.chain,ul+.math,.cards+.ex,.scroll+.ex,.chain+.ex,.math+.ex{margin-top:1rem}
+.chain+.cards{margin-top:1rem}
+.ex{margin-top:1rem;color:var(--mut);font-size:clamp(.9rem,1.6vw,1.1rem);max-width:62rem}.ex b{color:var(--c)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:.8rem;max-width:68rem}
+.card{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--c);border-radius:16px;padding:.9rem 1.1rem;font-size:clamp(.85rem,1.5vw,1.02rem);line-height:1.65;backdrop-filter:blur(10px)}
+.card h3{margin:0 0 .35rem;color:var(--c);font-size:1.15em}
+.card svg{display:block;width:100%;height:auto;max-height:100px;margin-bottom:.4rem}
+.chain{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;max-width:66rem}
+.chain b{color:var(--b);font-weight:400;font-size:1.2rem}
+.chain b::before{content:"←"}
+html[dir=ltr] .chain b::before{content:"→"}
+.chain span{background:var(--card);border:1px solid var(--c);border-radius:10px;padding:.35rem .75rem;font-size:clamp(.82rem,1.5vw,1.02rem)}
+.chain span.d{border-color:var(--b)}
+.scroll{overflow-x:auto;max-width:100%}
+table{border-collapse:separate;border-spacing:5px;font-size:clamp(.82rem,1.6vw,1.08rem)}
+td,th{padding:.5rem .9rem;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:10px}
+th{color:var(--c);font-weight:700;border-color:var(--c)}
+td:first-child{font-weight:700;color:var(--mut)}
+td.st{border-color:var(--c);color:var(--fg);font-weight:600}
+td.e{background:none;border-color:transparent}
+.math{direction:ltr;text-align:left;font-family:"Cambria Math",Cambria,Georgia,serif;font-style:italic;font-size:clamp(1rem,2.3vw,1.6rem);padding:.8rem 1.3rem;border-radius:14px;border:1px solid var(--line);background:var(--card);overflow-x:auto;max-width:36rem}
+.rh{margin:1.3rem 0 .2rem;color:var(--mut);font-size:1rem}
+.slide[data-s=R] h1{font-size:clamp(1.8rem,5vw,3.2rem);margin-bottom:.2rem}
+.refs{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:.5rem .8rem;max-width:68rem;margin-top:.6rem}
+.refs a,.refs div{display:block;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:.45rem .8rem;font-size:clamp(.74rem,1.3vw,.92rem);line-height:1.5;color:var(--fg);text-decoration:none;overflow-wrap:anywhere;backdrop-filter:blur(8px)}
+.refs a:hover{border-color:var(--b)}
+.refs b{display:block;color:var(--b);font-weight:600;font-size:.82em}
+.refs i{display:block;font-style:normal;color:var(--mut);direction:ltr;text-align:left;font-size:.85em}
+.bar{position:fixed;inset-inline-start:0;top:0;height:4px;width:0;background:linear-gradient(var(--bd),var(--a),var(--b));box-shadow:0 0 12px var(--b);transition:width .3s;z-index:5}
+.nav{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom,0px));inset-inline-end:18px;display:flex;gap:8px;align-items:center;color:var(--mut);font-size:.9rem;z-index:5}
+.ctl{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));inset-inline-end:16px;z-index:6}
+.nav button,.ctl button{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:12px;font:inherit;cursor:pointer;backdrop-filter:blur(8px)}
+.nav button{width:40px;height:40px;font-size:1.1rem}
+.ctl button{padding:.45rem .9rem;font-size:.85rem}
+.nav button:hover,.ctl button:hover{border-color:var(--b)}
+button:focus-visible,a:focus-visible{outline:2px solid var(--b);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*,body::before{animation:none!important;transition:none!important}li,.cards,.scroll,.chain,.math,.ex,.refs{opacity:1!important;transform:none!important}}
+</style>
+</head>
+<body>
+<div class="bar" id="bar"></div>
+<div class="ctl"><button id="lg"></button></div>
+<main class="deck" id="deck"></main>
+<div class="nav"><button id="prev"></button><span id="count"></span><button id="next"></button></div>
+<script>
+function C(a){return '<div class="cards">'+a.map(function(c){return '<div class="card">'+(c[2]||'')+'<h3>'+c[0]+'</h3>'+c[1]+'</div>'}).join('')+'</div>'}
+function CH(a,cl){return '<div class="chain">'+a.map(function(x,k){return (k?'<b></b>':'')+'<span'+(cl&&cl[k]?' class="'+cl[k]+'"':'')+'>'+x+'</span>'}).join('')+'</div>'}
+function TB(r){return '<div class="scroll"><table><tr>'+r[0].map(function(h){return '<th>'+h+'</th>'}).join('')+'</tr>'+r.slice(1).map(function(w){return '<tr>'+w.map(function(c){return '<td>'+c+'</td>'}).join('')+'</tr>'}).join('')+'</table></div>'}
+function M(x){return '<div class="math">'+x+'</div>'}
+var T={fa:{thx:'از توجه شما سپاسگزاریم',ref:'منابع استفاده‌شده',v:'ویدیو',w:'وب',b:'کتاب / مقاله',tog:'English',nx:'←',pv:'→',nxl:'بعدی',pvl:'قبلی'},en:{thx:'Thank you',ref:'References used',v:'Video',w:'Web',b:'Book / Paper',tog:'فارسی',nx:'→',pv:'←',nxl:'Next',pvl:'Previous'}};
+var FA=[
+{s:'T',t:'<span class="g">حافظه‌های SRAM و DRAM</span>',sub:'ساختار، ویژگی‌ها، مقایسه و نقش هر کدام در سلسله‌مراتب حافظه'},
+{t:'حافظهٔ دسترسی تصادفی (RAM)',p:['RAM حافظه‌ای است که CPU برنامه‌ها و داده‌های در حال اجرا را در آن می‌خواند و می‌نویسد؛ دسترسی به هر خانه تقریباً هم‌زمان است (دسترسی تصادفی)','هر دو نوع SRAM و DRAM <b>فرّار (Volatile)</b> هستند: با قطع برق، داده از بین می‌رود. (برخلاف حافظه‌های غیرفرّار مثل فلش)','تفاوت اصلی در <b>نحوهٔ نگهداری یک بیت</b> است: SRAM با مدار بازخوردی، DRAM با بار الکتریکی خازن']},
+{t:'SRAM (حافظهٔ ایستا)',s:'B',p:['هر بیت در یک <b>فلیپ‌فلاپ</b> ذخیره می‌شود: دو معکوس‌کنندهٔ متقابل (۴ ترانزیستور) و دو ترانزیستور دسترسی؛ در مجموع <b>۶ ترانزیستور (6T)</b>','تا وقتی برق وصل است، مدار حالت خود را حفظ می‌کند؛ پس <b>تازه‌سازی (Refresh) لازم نیست</b>','خواندن مخرب نیست و بسیار سریع است (حدود چند نانوثانیه یا کمتر)','سلول بزرگ است؛ پس چگالی کم، ظرفیت کم و هزینهٔ هر بیت زیاد','کاربرد: ثبات‌ها و حافظهٔ نهان (L1، L2، L3) داخل CPU']},
+{t:'DRAM (حافظهٔ پویا)',p:['هر بیت در یک <b>خازن</b> ذخیره می‌شود که با یک ترانزیستور دسترسی کنترل می‌شود (<b>1T1C</b>): خازن شارژشده یعنی ۱ و تخلیه یعنی ۰','خازن به‌مرور نشت می‌کند؛ پس هر سلول باید در بازه‌های کوتاه (معمولاً حدود <b>۶۴ میلی‌ثانیه</b>) خوانده و دوباره نوشته شود: <b>تازه‌سازی</b>','خواندن <b>مخرب</b> است و پس از خواندن باید مقدار بازنویسی شود؛ تقویت‌کنندهٔ حسگر (Sense amplifier) این کار را می‌کند','آدرس‌دهی به‌صورت سطر و ستون (RAS/CAS) انجام می‌شود؛ سلول کوچک است و چگالی و ظرفیت بالا و هزینه کم است','کاربرد: حافظهٔ اصلی (RAM) رایانه و گوشی، مثل DDR']},
+{t:'مقایسهٔ SRAM و DRAM',s:'B',raw:TB([['ویژگی','SRAM','DRAM'],['سلول حافظه','فلیپ‌فلاپ (۶ ترانزیستور)','۱ ترانزیستور + ۱ خازن'],['سرعت','بسیار بالا','کمتر'],['تازه‌سازی','ندارد','دارد (حدود هر ۶۴ میلی‌ثانیه)'],['خواندن','غیرمخرب','مخرب و نیازمند بازنویسی'],['چگالی و ظرفیت','کم','زیاد'],['هزینهٔ هر بیت','زیاد','کم'],['پیچیدگی مدار جانبی','ساده‌تر','پیچیده‌تر (کنترل تازه‌سازی، RAS/CAS)'],['کاربرد','ثبات و حافظهٔ نهان CPU','حافظهٔ اصلی']])},
+{t:'سلسله‌مراتب حافظه',e:C([['ثبات‌ها','حافظه‌های بسیار کوچک داخل هستهٔ CPU که عملوندهای دستور جاری را نگه می‌دارند؛ سریع‌ترین سطح.'],['کش L1','کوچک‌ترین کش، اختصاصی هر هسته و معمولاً جدا برای دستور و داده؛ با SRAM ساخته می‌شود.'],['کش L2','بزرگ‌تر و کندتر از L1؛ اختصاصی یک هسته یا مشترک بین چند هسته؛ درخواست‌هایی را که در L1 پیدا نشده‌اند جواب می‌دهد.'],['کش L3','معمولاً بین همهٔ هسته‌های تراشه مشترک و در حد چند مگابایت؛ رفت‌وآمد به DRAM را کم می‌کند.'],['حافظهٔ اصلی (DRAM)','در حد گیگابایت؛ برنامه‌ها و داده‌های در حال اجرا را نگه می‌دارد و داده را در بلوک‌هایی (خط کش، حدود ۶۴ بایت) به کش می‌دهد.'],['SSD / دیسک','ذخیره‌سازی غیرفرّار برای فایل‌های دائمی؛ بسیار کندتر؛ حافظهٔ مجازی هم از آن برای جا دادن صفحه‌ها استفاده می‌کند.']]),raw:CH(['ثبات‌ها','کش L1','کش L2','کش L3','حافظهٔ اصلی (DRAM)','SSD / دیسک'],['','','','','d','d']),x:'هرچه به CPU نزدیک‌تر باشیم، حافظه سریع‌تر، کوچک‌تر و گران‌تر است. کش‌ها با SRAM ساخته می‌شوند و حافظهٔ اصلی با DRAM. حافظهٔ بزرگ‌تر و ارزان‌تر در سطح پایین‌تر داده‌ها را برای سطح بالاتر نگه می‌دارد.'},
+{t:'تقریب مرتبهٔ بزرگی',s:'B',raw:TB([['سطح','فناوری','زمان دسترسی (تقریبی)','ظرفیت (تقریبی)'],['ثبات‌ها','SRAM / منطق','کمتر از ۱ ns','صدها بایت'],['کش L1','SRAM','حدود ۱ ns','دهها KB'],['کش L2 / L3','SRAM','حدود ۳ تا ۲۰ ns','MB'],['حافظهٔ اصلی','DRAM','حدود ۵۰ تا ۱۰۰ ns','GB'],['SSD','فلش','حدود ۱۰۰ µs','صدها GB تا TB']]),x:'اعداد بسته به نسل و طراحی فرق می‌کنند و فقط برای درک نسبت‌ها آمده‌اند.'},
+{t:'چرا ترکیب این دو جواب می‌دهد؟',p:['<b>اصل مجاورت:</b> برنامه‌ها داده‌های اخیر (مجاورت زمانی) و داده‌های نزدیک آن‌ها (مجاورت مکانی) را دوباره استفاده می‌کنند؛ پس کش کوچک ولی سریع بیشتر درخواست‌ها را جواب می‌دهد','هر درخواستی که در کش پیدا نشود (miss) باید به DRAM برود و گران‌تر تمام می‌شود'],raw:M('AMAT = Hit time + Miss rate × Miss penalty'),x:'<b>مثال:</b> اگر زمان برخورد ۱ ns، نرخ خطا ۵٪ و جریمهٔ خطا ۶۰ ns باشد، میانگین زمان دسترسی ۱ + ۰٫۰۵ × ۶۰ = ۴ ns است؛ بسیار نزدیک‌تر به سرعت SRAM تا DRAM.'},
+{t:'گونه‌های مرتبط',s:'B',raw:C([['SDRAM و DDR','DRAM همگام با ساعت؛ DDR داده را روی هر دو لبهٔ ساعت منتقل می‌کند (DDR4، DDR5) و حافظهٔ اصلی امروزی است.'],['GDDR و HBM','DRAM با پهنای باند بالا برای کارت‌های گرافیک و شتاب‌دهنده‌ها؛ HBM لایه‌های DRAM را روی هم می‌چیند.'],['حافظه‌های غیرفرّار','فلش و فناوری‌هایی مثل MRAM داده را بدون برق نگه می‌دارند؛ برای ذخیره‌سازی، نه جایگزین مستقیم کش و RAM.']])},
+{t:'جمع‌بندی',p:['SRAM: سلول ۶ ترانزیستوری، سریع و بدون تازه‌سازی، اما بزرگ و گران؛ مناسب ثبات و حافظهٔ نهان','DRAM: سلول ۱ ترانزیستور و ۱ خازن، چگال و ارزان، اما کندتر و نیازمند تازه‌سازی؛ مناسب حافظهٔ اصلی','هر دو فرّارند و سلسله‌مراتب حافظه با ترکیب آن‌ها، تعادلی میان سرعت، ظرفیت و هزینه می‌سازد']}
+];
+var EN=[
+{s:'T',t:'<span class="g">SRAM and DRAM Memory</span>',sub:'Structure, features, comparison and the role of each in the memory hierarchy'},
+{t:'Random-access memory (RAM)',p:['RAM is where the CPU reads and writes the programs and data it is running; any cell can be reached in roughly the same time (random access)','Both SRAM and DRAM are <b>volatile</b>: data is lost when power is removed (unlike non-volatile memory such as flash)','The key difference is <b>how one bit is held</b>: SRAM with a feedback circuit, DRAM with the electric charge of a capacitor']},
+{t:'SRAM (static RAM)',s:'B',p:['Each bit is stored in a <b>flip-flop</b>: two cross-coupled inverters (4 transistors) plus two access transistors, for <b>6 transistors (6T)</b> in total','While power is on, the circuit holds its state, so <b>no refresh is needed</b>','Reading is non-destructive and very fast (a few nanoseconds or less)','The cell is large, so density and capacity are low and cost per bit is high','Use: registers and CPU caches (L1, L2, L3)']},
+{t:'DRAM (dynamic RAM)',p:['Each bit is stored in a <b>capacitor</b> controlled by one access transistor (<b>1T1C</b>): charged means 1, discharged means 0','The capacitor slowly leaks, so every cell must be read and rewritten at short intervals (typically about <b>64 ms</b>): <b>refresh</b>','Reading is <b>destructive</b> and the value must be written back; sense amplifiers do this','Addressing is by row and column (RAS/CAS); the cell is small, so density and capacity are high and cost is low','Use: main memory (RAM) in computers and phones, such as DDR']},
+{t:'SRAM vs DRAM',s:'B',raw:TB([['Feature','SRAM','DRAM'],['Memory cell','Flip-flop (6 transistors)','1 transistor + 1 capacitor'],['Speed','Very high','Lower'],['Refresh','None','Required (about every 64 ms)'],['Read','Non-destructive','Destructive, needs write-back'],['Density and capacity','Low','High'],['Cost per bit','High','Low'],['Support circuitry','Simpler','More complex (refresh control, RAS/CAS)'],['Use','CPU registers and caches','Main memory']])},
+{t:'The memory hierarchy',e:C([['Registers','Tiny storage inside the CPU core that holds the operands of the current instructions; the fastest level.'],['L1 cache','The smallest cache, private to each core and usually split into instruction and data; built from SRAM.'],['L2 cache','Larger and slower than L1; private to one core or shared by a few; answers requests that missed in L1.'],['L3 cache','Usually shared by all cores on the chip, a few megabytes or more; reduces trips to DRAM.'],['Main memory (DRAM)','Gigabytes in size; holds running programs and data and supplies the cache in blocks (cache lines, about 64 bytes).'],['SSD / disk','Non-volatile storage for permanent files; much slower; virtual memory also uses it to hold swapped-out pages.']]),raw:CH(['Registers','L1 cache','L2 cache','L3 cache','Main memory (DRAM)','SSD / disk'],['','','','','d','d']),x:'The closer to the CPU, the faster, smaller and costlier the memory. Caches are built from SRAM and main memory from DRAM. Larger, cheaper memory at a lower level keeps data for the level above.'},
+{t:'Orders of magnitude',s:'B',raw:TB([['Level','Technology','Access time (approx.)','Capacity (approx.)'],['Registers','SRAM / logic','Under 1 ns','Hundreds of bytes'],['L1 cache','SRAM','About 1 ns','Tens of KB'],['L2 / L3 cache','SRAM','About 3 to 20 ns','MB'],['Main memory','DRAM','About 50 to 100 ns','GB'],['SSD','Flash','About 100 µs','Hundreds of GB to TB']]),x:'Numbers vary by generation and design; they are given only to show the ratios.'},
+{t:'Why combining them works',p:['<b>Principle of locality:</b> programs reuse recent data (temporal locality) and nearby data (spatial locality), so a small but fast cache answers most requests','Each request not found in the cache (a miss) must go to DRAM and costs more'],raw:M('AMAT = Hit time + Miss rate × Miss penalty'),x:'<b>Example:</b> with a 1 ns hit time, a 5% miss rate and a 60 ns miss penalty, average access time is 1 + 0.05 × 60 = 4 ns, much closer to SRAM speed than to DRAM speed.'},
+{t:'Related variants',s:'B',raw:C([['SDRAM and DDR','Clock-synchronous DRAM; DDR transfers data on both clock edges (DDR4, DDR5) and is today’s main memory.'],['GDDR and HBM','High-bandwidth DRAM for graphics cards and accelerators; HBM stacks DRAM layers on top of each other.'],['Non-volatile memory','Flash and technologies such as MRAM keep data without power; used for storage, not as a direct replacement for cache and RAM.']])},
+{t:'Summary',p:['SRAM: 6-transistor cell, fast and no refresh, but large and costly; suited to registers and caches','DRAM: 1-transistor, 1-capacitor cell, dense and cheap, but slower and needs refresh; suited to main memory','Both are volatile, and the memory hierarchy combines them to balance speed, capacity and cost']}
+];
+var REF=[['v','SRAM vs DRAM: How SRAM Works? How DRAM Works? Why SRAM is faster than DRAM?','https://www.youtube.com/watch?v=r787m_IaR1I'],['w','learnlearn.uk: SRAM vs DRAM (A Level Computer Science)','https://learnlearn.uk/alevelcs/sram-vs-dram/'],['w','Wikipedia: Static random-access memory','https://en.wikipedia.org/wiki/Static_random-access_memory'],['w','Wikipedia: Dynamic random-access memory','https://en.wikipedia.org/wiki/Dynamic_random-access_memory'],['b','Patterson & Hennessy, Computer Organization and Design (Morgan Kaufmann)',''],['b','Stallings, Computer Organization and Architecture (Pearson)','']];
+
+var lang='fa',i=0,n=0,el,d=document.getElementById('deck'),bar=document.getElementById('bar'),cnt=document.getElementById('count'),pv=document.getElementById('prev'),nx=document.getElementById('next'),lg=document.getElementById('lg');
+function build(){
+ var t=T[lang],S=(lang==='fa'?FA:EN).concat([{s:'R'}]),h=document.documentElement;
+ h.lang=lang;h.dir=lang==='fa'?'rtl':'ltr';n=S.length;d.innerHTML='';
+ S.forEach(function(o){var e=document.createElement('section');e.className='slide';e.dataset.s=o.s||'A';
+  e.innerHTML=o.s==='T'?'<h1>'+o.t+'</h1><div class="sub">'+o.sub+'</div>':o.s==='R'?'<h1><span class="g">'+t.thx+'</span></h1><div class="rh">'+t.ref+'</div><div class="refs">'+REF.map(function(r){var x='<b>'+t[r[0]]+'</b><span dir="ltr">'+r[1]+'</span>';return r[2]?'<a href="'+r[2]+'" target="_blank" rel="noopener">'+x+'<i>'+r[2].replace(/^https?:\/\/(www\.)?/,'')+'</i></a>':'<div>'+x+'</div>'}).join('')+'</div>':'<h2>'+o.t+'</h2>'+(o.p?'<ul>'+o.p.map(function(x,k){return '<li style="--i:'+k+'">'+x+'</li>'}).join('')+'</ul>':'')+(o.raw||'')+(o.e||'')+(o.x?'<div class="ex">'+o.x+'</div>':'');
+  d.appendChild(e)});
+ el=d.children;lg.textContent=t.tog;pv.textContent=t.pv;nx.textContent=t.nx;pv.setAttribute('aria-label',t.pvl);nx.setAttribute('aria-label',t.nxl);
+go(i)}
+function go(k){i=Math.max(0,Math.min(n-1,k));for(var j=0;j<n;j++)el[j].className='slide'+(j===i?' on':j<i?' past':'');bar.style.width=((i+1)/n*100)+'%';cnt.textContent=(i+1).toLocaleString(lang)+' / '+n.toLocaleString(lang)}
+nx.onclick=function(){go(i+1)};pv.onclick=function(){go(i-1)};
+lg.onclick=function(){lang=lang==='fa'?'en':'fa';build()};
+document.addEventListener('keydown',function(e){var fa=lang==='fa';
+ if(['ArrowDown','PageDown',' ',fa?'ArrowLeft':'ArrowRight'].indexOf(e.key)>-1){e.preventDefault();go(i+1)}
+ if(['ArrowUp','PageUp',fa?'ArrowRight':'ArrowLeft'].indexOf(e.key)>-1){e.preventDefault();go(i-1)}
+ if(e.key==='Home')go(0);if(e.key==='End')go(n-1)});
+var x0=null;
+document.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});
+document.addEventListener('touchend',function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>50)go(i+((dx<0)===(lang!=='fa')?1:-1));x0=null});
+build();
+</script>
+</body>
+</html>
