@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SRAM و DRAM</title>
+<style>
+:root{--bg:#070713;--card:rgba(255,255,255,.05);--fg:#eef0ff;--mut:#a3a5cb;--a:#f472b6;--b:#60a5fa;--line:rgba(255,255,255,.12);--glow:.35;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:light){:root{--bg:#f3f2ff;--card:rgba(255,255,255,.78);--fg:#171633;--mut:#5d5f86;--a:#be185d;--b:#2563eb;--line:rgba(60,50,140,.16);--glow:.12;color-scheme:light}}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--fg);font-family:Vazirmatn,Tahoma,"Segoe UI",system-ui,sans-serif;line-height:1.7;overflow:hidden;position:relative}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(40vmax 40vmax at 15% 10%,var(--a),transparent 70%),radial-gradient(36vmax 36vmax at 95% 95%,var(--b),transparent 70%);opacity:var(--glow);animation:drift 14s ease-in-out infinite alternate}
+body::after{content:"";position:fixed;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:56px 56px;opacity:.35;-webkit-mask-image:radial-gradient(ellipse at center,#000 30%,transparent 80%);mask-image:radial-gradient(ellipse at center,#000 30%,transparent 80%)}
+@keyframes drift{to{transform:scale(1.15) translate(2%,2%)}}
+.deck{height:100%;position:relative;z-index:2}
+.slide{--c:var(--a);position:absolute;inset:0;display:flex;flex-direction:column;justify-content:safe center;padding:7vh 8vw 11vh;overflow-y:auto;opacity:0;visibility:hidden;transform:translateX(-50px) scale(.98);transition:opacity .5s,transform .5s,visibility .5s}
+.slide.on{opacity:1;visibility:visible;transform:none}
+.slide.past{transform:translateX(50px) scale(.98)}
+.g{background:linear-gradient(90deg,var(--a),var(--b));-webkit-background-clip:text;background-clip:text;color:transparent}
+h1{font-size:clamp(2.1rem,6.5vw,4.4rem);margin:0 0 1rem;line-height:1.3}
+h2{font-size:clamp(1.5rem,3.8vw,2.7rem);margin:0 0 1.3rem;line-height:1.35}
+.sub{color:var(--mut);font-size:clamp(1rem,2vw,1.4rem);max-width:40ch}
+ul{list-style:none;padding:0;margin:0;display:grid;gap:.75rem;max-width:60rem}
+li{font-size:clamp(.98rem,2vw,1.4rem);background:var(--card);border:1px solid var(--line);border-right:3px solid var(--c);border-radius:14px;padding:.8rem 1.1rem;backdrop-filter:blur(10px);opacity:0;transform:translateY(16px)}
+.on li{animation:up .55s forwards;animation-delay:calc(.15s + var(--i)*.13s)}
+@keyframes up{to{opacity:1;transform:none}}
+.on .cards,.on .scroll,.on .chain,.on .math,.on .ex{animation:fade .7s .2s both}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}}
+.ex{margin-top:1.2rem;color:var(--mut);font-size:clamp(.92rem,1.8vw,1.2rem);max-width:60rem}.ex b{color:var(--c)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem;max-width:66rem}
+.card{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--c);border-radius:16px;padding:1rem 1.2rem;font-size:clamp(.88rem,1.6vw,1.1rem);line-height:1.7;backdrop-filter:blur(10px)}
+.card h3{margin:0 0 .4rem;color:var(--c);font-size:1.2em}
+.card svg{display:block;width:100%;height:auto;max-height:110px;margin-bottom:.4rem}
+.chain{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-top:.5rem;max-width:64rem}
+.chain b{color:var(--b);font-weight:400;font-size:1.2rem}
+.chain span{background:var(--card);border:1px solid var(--c);border-radius:10px;padding:.4rem .8rem;font-size:clamp(.85rem,1.6vw,1.1rem)}
+.chain span.d{border-color:var(--b)}
+.scroll{overflow-x:auto;max-width:100%}
+table{border-collapse:separate;border-spacing:6px;font-size:clamp(.85rem,1.8vw,1.2rem)}
+td,th{padding:.6rem 1rem;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:10px}
+th{color:var(--c);font-weight:700;border-color:var(--c)}
+td:first-child{font-weight:700;color:var(--mut)}
+td.st{border-color:var(--c);color:var(--fg);font-weight:600}
+td.e{background:none;border-color:transparent}
+.math{direction:ltr;text-align:left;font-family:"Cambria Math",Cambria,Georgia,serif;font-style:italic;font-size:clamp(1.05rem,2.5vw,1.8rem);padding:1rem 1.4rem;border-radius:14px;border:1px solid var(--line);background:var(--card);margin:.2rem 0 0;overflow-x:auto;max-width:34rem}
+.bar{position:fixed;right:0;top:0;height:4px;width:0;background:linear-gradient(270deg,var(--a),var(--b));box-shadow:0 0 12px var(--b);transition:width .3s;z-index:5}
+.nav{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom,0px));left:18px;display:flex;gap:8px;align-items:center;color:var(--mut);font-size:.9rem;z-index:5;direction:ltr}
+.nav button{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:12px;width:40px;height:40px;font-size:1.1rem;cursor:pointer;backdrop-filter:blur(8px)}
+.nav button:hover{border-color:var(--b)}
+button:focus-visible{outline:2px solid var(--b);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*,body::before{animation:none!important;transition:none!important}li,.cards,.scroll,.chain,.math,.ex{opacity:1!important;transform:none!important}}
+</style>
+</head>
+<body>
+<div class="bar" id="bar"></div>
+<main class="deck" id="deck"></main>
+<div class="nav"><button id="next" aria-label="بعدی">→</button><span id="count"></span><button id="prev" aria-label="قبلی">←</button></div>
+<script>
+function C(a){return '<div class="cards">'+a.map(function(c){return '<div class="card">'+(c[2]||'')+'<h3>'+c[0]+'</h3>'+c[1]+'</div>'}).join('')+'</div>'}
+function CH(a,cl){return '<div class="chain">'+a.map(function(x,k){return (k?'<b>←</b>':'')+'<span'+(cl&&cl[k]?' class="'+cl[k]+'"':'')+'>'+x+'</span>'}).join('')+'</div>'}
+function TB(r){return '<div class="scroll"><table><tr>'+r[0].map(function(h){return '<th>'+h+'</th>'}).join('')+'</tr>'+r.slice(1).map(function(w){return '<tr>'+w.map(function(c){return '<td>'+c+'</td>'}).join('')+'</tr>'}).join('')+'</table></div>'}
+function M(x){return '<div class="math">'+x+'</div>'}
+var THX={s:'T',t:'<span class="g">از توجه شما سپاسگزاریم</span>',sub:'پرسش؟'};
+var S=[
+{s:'T',t:'<span class="g">حافظه‌های SRAM و DRAM</span>',sub:'ویژگی‌ها و مقایسهٔ دو نوع اصلی حافظهٔ نیمه‌رسانا'},
+{t:'دو حافظهٔ فرّار',p:['هر دو فرّار (Volatile) هستند: با قطع برق، داده از بین می‌رود','SRAM (Static RAM): هر بیت در یک فلیپ‌فلاپ، معمولاً با ۶ ترانزیستور، نگهداری می‌شود','DRAM (Dynamic RAM): هر بیت در یک خازن و یک ترانزیستور؛ خازن به‌مرور تخلیه می‌شود و باید تازه‌سازی (Refresh) شود']},
+{t:'ویژگی‌ها',raw:C([['SRAM','بسیار سریع و بدون نیاز به تازه‌سازی. سلول بزرگ است، پس چگالی کم و هزینهٔ هر بیت زیاد. کاربرد: حافظهٔ نهان (L1 تا L3) و ثبات‌ها.'],['DRAM','کندتر از SRAM و نیازمند تازه‌سازی دوره‌ای. سلول کوچک است، پس ظرفیت بالا و هزینهٔ کم. کاربرد: حافظهٔ اصلی (RAM) مثل DDR.']])},
+{t:'مقایسه',s:'B',raw:TB([['ویژگی','SRAM','DRAM'],['سلول حافظه','فلیپ‌فلاپ (حدود ۶ ترانزیستور)','۱ ترانزیستور + ۱ خازن'],['سرعت','بسیار بالا','کمتر'],['تازه‌سازی','ندارد','دارد (حدود هر ۶۴ میلی‌ثانیه)'],['چگالی و ظرفیت','کم','زیاد'],['هزینهٔ هر بیت','زیاد','کم'],['کاربرد','حافظهٔ نهان پردازنده','حافظهٔ اصلی']])},
+{t:'چرا هر دو را کنار هم می‌بینیم؟',raw:CH(['ثبات‌ها','کش L1','کش L2','کش L3','حافظهٔ اصلی (DRAM)','دیسک'],['','','','','d','d']),x:'هرچه به CPU نزدیک‌تر باشیم، حافظه سریع‌تر، کوچک‌تر و گران‌تر است. کش‌ها با SRAM ساخته می‌شوند.'},
+{t:'جمع‌بندی',s:'B',p:['SRAM: سرعت بالا و هزینهٔ زیاد، مناسب حافظهٔ نهان','DRAM: ظرفیت بالا و هزینهٔ کم، مناسب حافظهٔ اصلی','سلسله‌مراتب حافظه، تعادلی میان سرعت، ظرفیت و هزینه می‌سازد']},
+THX];
+
+var d=document.getElementById('deck'),bar=document.getElementById('bar'),cnt=document.getElementById('count'),i=0,n=S.length;
+S.forEach(function(o){var e=document.createElement('section');e.className='slide';
+ e.innerHTML=o.s==='T'?'<h1>'+o.t+'</h1><div class="sub">'+o.sub+'</div>':'<h2>'+o.t+'</h2>'+(o.p?'<ul>'+o.p.map(function(x,k){return '<li style="--i:'+k+'">'+x+'</li>'}).join('')+'</ul>':'')+(o.raw||'')+(o.x?'<div class="ex">'+o.x+'</div>':'');
+ d.appendChild(e)});
+var el=d.children;
+function go(k){i=Math.max(0,Math.min(n-1,k));for(var j=0;j<n;j++)el[j].className='slide'+(j===i?' on':j<i?' past':'');bar.style.width=((i+1)/n*100)+'%';cnt.textContent=(i+1).toLocaleString('fa')+' / '+n.toLocaleString('fa')}
+document.getElementById('next').onclick=function(){go(i+1)};
+document.getElementById('prev').onclick=function(){go(i-1)};
+document.addEventListener('keydown',function(e){
+ if(['ArrowDown','PageDown',' ','ArrowLeft'].indexOf(e.key)>-1){e.preventDefault();go(i+1)}
+ if(['ArrowUp','PageUp','ArrowRight'].indexOf(e.key)>-1){e.preventDefault();go(i-1)}
+ if(e.key==='Home')go(0);if(e.key==='End')go(n-1)});
+var x0=null;
+document.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});
+document.addEventListener('touchend',function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>50)go(i+(dx>0?1:-1));x0=null});
+go(0);
+</script>
+</body>
+</html>
